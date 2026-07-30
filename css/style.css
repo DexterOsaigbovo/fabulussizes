@@ -171,6 +171,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 .nav-toggle.open span:nth-child(2) { opacity: 0; }
 .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+/* WhatsApp CTA injected into the mobile drawer — hidden on the desktop nav */
+.mobile-cta-item { display: none; }
 
 /* ============================================================
    HERO (home) — dark, photographic
@@ -518,29 +520,50 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .lb-prev { left: 2vw; } .lb-next { right: 2vw; }
 
 /* ============================================================
-   COBBLER PRELOADER (dark, first visit)
+   COBBLER PRELOADER — a brogue built before your eyes
+   (first arrival + reloads; skipped between pages)
    ============================================================ */
-.preloader { position: fixed; inset: 0; z-index: 1000; background: var(--ink); display: grid; place-items: center; transition: opacity .6s var(--ease), visibility .6s; }
+.preloader {
+  position: fixed; inset: 0; z-index: 1000;
+  background: radial-gradient(900px 620px at 50% 32%, #2a1e12, var(--ink) 72%);
+  display: grid; place-items: center;
+  transition: opacity .7s var(--ease), visibility .7s;
+}
+.preloader::before { content: ""; position: absolute; inset: 0; opacity: .05; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='pn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23pn)'/%3E%3C/svg%3E"); }
 .preloader.done { opacity: 0; visibility: hidden; }
-.pl-inner { text-align: center; }
-.pl-shoe { width: 210px; height: auto; display: block; margin: 0 auto 1.6rem; overflow: visible; filter: drop-shadow(0 12px 30px rgba(184,18,40,.35)); }
-.pl-shoe path { fill: none; stroke: var(--parchment); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-.pl-shoe .stitch { stroke: var(--crimson-soft); stroke-width: 2.2; stroke-dasharray: 3 7; opacity: 0; transition: opacity .4s ease; animation: sew 1s linear infinite; }
+.pl-inner { position: relative; text-align: center; padding: 0 24px; }
+.pl-shoe { width: 250px; height: auto; display: block; margin: 0 auto 1.5rem; overflow: visible; filter: drop-shadow(0 16px 34px rgba(0,0,0,.55)); transition: transform .7s var(--ease), filter .7s ease; }
+.pl-shoe path { fill: none; stroke: var(--parchment); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: stroke .6s ease; }
+.pl-shoe .pl-fillpath { stroke: none; fill: var(--cognac); opacity: 0; transition: opacity .9s ease; }
+.pl-shoe .pl-dots { stroke: var(--brass-bright); stroke-width: 3.2; stroke-dasharray: .5 8; opacity: 0; }
+.pl-shoe .stitch { stroke: var(--crimson-soft); stroke-width: 2; stroke-dasharray: 3 7; opacity: 0; transition: opacity .4s ease; animation: sew 1s linear infinite; }
 .pl-shoe.sew .stitch { opacity: 1; }
 @keyframes sew { to { stroke-dashoffset: -20; } }
-.pl-shoe.done path { stroke: var(--brass-bright); transition: stroke .5s ease; }
+.pl-hammer rect { fill: var(--parchment); transition: fill .6s ease; }
+.pl-hammer { transform-box: fill-box; transform-origin: 50% 94%; animation: tap 1s ease-in-out infinite; transition: opacity .45s ease; }
+@keyframes tap { 0%, 100% { transform: rotate(-16deg) translateY(0); } 42% { transform: rotate(7deg) translateY(3px); } 52% { transform: rotate(5deg) translateY(2px); } }
+.pl-shoe.quiet .pl-hammer { opacity: 0; }
+.pl-shine { fill: url(#plsheen); transform: translateX(0) skewX(-18deg); }
+.pl-shoe.done { transform: translateY(-8px); filter: drop-shadow(0 20px 44px rgba(214,172,99,.35)); }
+.pl-shoe.done path { stroke: var(--brass-bright); }
 .pl-shoe.done .stitch { stroke: var(--parchment); }
-.pl-hammer { transform-origin: 70% 80%; animation: tap 1.1s ease-in-out infinite; }
-@keyframes tap { 0%, 100% { transform: rotate(-18deg); } 45% { transform: rotate(6deg); } 55% { transform: rotate(4deg); } }
-.pl-word { font-family: var(--display); font-size: 1.9rem; font-weight: 800; color: #fff; letter-spacing: .04em; display: flex; justify-content: center; gap: .02em; }
-.pl-word .sp { width: .35em; display: inline-block; }
-.pl-word span { opacity: 0; transform: translateY(20px); animation: plChar .5s var(--ease) forwards; }
+.pl-shoe.done .pl-fillpath { opacity: .2; }
+.pl-shoe.done .pl-shine { animation: plsweep 1.1s var(--ease) .2s forwards; }
+@keyframes plsweep { to { transform: translateX(370px) skewX(-18deg); } }
+.pl-word { font-family: var(--display); font-size: 1.9rem; font-weight: 800; color: #fff; letter-spacing: .06em; display: flex; justify-content: center; gap: .02em; }
+.pl-word .sp { width: .38em; display: inline-block; }
+.pl-word span { opacity: 0; transform: translateY(22px) rotate(3deg); animation: plChar .55s var(--ease) forwards; }
 .pl-word b { color: var(--crimson-soft); display: inline-flex; }
 @keyframes plChar { to { opacity: 1; transform: none; } }
-.pl-status { color: var(--parchment-dim); font-family: var(--utility); font-size: .8rem; letter-spacing: .26em; text-transform: uppercase; margin-top: .4rem; min-height: 1.3em; transition: opacity .3s ease; }
-.pl-bar { width: 220px; height: 3px; background: rgba(255,255,255,.12); border-radius: 3px; margin: 1.4rem auto 0; overflow: hidden; }
-.pl-bar i { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, var(--crimson), var(--brass-bright)); border-radius: 3px; }
-.pl-pct { margin-top: .8rem; font-family: var(--utility); font-size: .8rem; letter-spacing: .3em; color: var(--parchment-dim); }
+.pl-rule { width: 0; height: 1px; margin: .8rem auto 0; background: linear-gradient(90deg, transparent, var(--brass-bright), transparent); animation: plrule 1.3s var(--ease) .5s forwards; }
+@keyframes plrule { to { width: min(62vw, 230px); } }
+.pl-status { color: var(--parchment-dim); font-family: var(--utility); font-size: .78rem; letter-spacing: .26em; text-transform: uppercase; margin-top: .9rem; min-height: 1.4em; transition: opacity .3s ease; }
+/* ruler-style progress bar — a nod to the cobbler's measuring stick */
+.pl-bar { position: relative; width: min(62vw, 230px); height: 14px; margin: 1rem auto 0; }
+.pl-bar::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: rgba(245,239,227,.28); }
+.pl-bar::after { content: ""; position: absolute; left: 0; right: 0; bottom: 1px; height: 6px; background-image: repeating-linear-gradient(90deg, rgba(245,239,227,.26) 0 1px, transparent 1px 11.45px); }
+.pl-bar i { position: absolute; left: 0; bottom: 0; height: 3px; width: 0%; background: linear-gradient(90deg, var(--crimson), var(--brass-bright)); box-shadow: 0 0 12px rgba(184,18,40,.55); }
+.pl-pct { margin-top: .7rem; font-family: var(--display); font-style: italic; font-size: 1.05rem; color: var(--brass-bright); letter-spacing: .08em; }
 .pl-curtain { position: fixed; inset: 0; z-index: 999; pointer-events: none; display: grid; grid-template-columns: repeat(5, 1fr); }
 .pl-curtain span { background: var(--ink-2); transform: scaleY(1); transform-origin: top; transition: transform .7s var(--ease); }
 .pl-curtain.lift span { transform: scaleY(0); }
@@ -581,7 +604,33 @@ body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .pro
 /* ============================================================
    RESPONSIVE
    ============================================================ */
-@media (max-width: 1100px) { :root { --maxw: 980px; } }
+@media (max-width: 1100px) {
+  :root { --maxw: 980px; }
+  .nav { gap: 1rem; }
+  .nav-links { gap: 1.3rem; }
+}
+
+/* ---------- Nav collapses to a drawer once links + CTA get crowded ---------- */
+@media (max-width: 1020px) {
+  .nav-links {
+    position: fixed; top: 76px; left: 0; right: 0; z-index: 99;
+    background: var(--cream); flex-direction: column; align-items: stretch; gap: 0;
+    padding: 1rem 28px 2rem; border-bottom: 1px solid var(--line); box-shadow: var(--shadow-md);
+    transform: translateY(-140%); transition: transform .4s var(--ease); height: auto;
+    max-height: calc(100vh - 76px); overflow-y: auto;
+  }
+  .nav-links.open { transform: translateY(0); }
+  .nav-links li { border-bottom: 1px solid var(--line); }
+  .nav-links a { display: block; padding: 1rem 0; font-size: 1.05rem; }
+  .nav-links a::after { display: none; }
+  .nav-toggle { display: flex; }
+  .mobile-cta-item { display: block; border-bottom: 0; }
+  .nav-links .mobile-cta {
+    display: block; background: var(--crimson); color: #fff; text-align: center;
+    border-radius: 10px; margin-top: 14px; padding: 1rem !important; font-weight: 600;
+  }
+  .nav-links .mobile-cta:hover { background: var(--crimson-2); color: #fff; }
+}
 
 @media (max-width: 980px) {
   .hero-inner { grid-template-columns: 1fr; gap: 2.4rem; min-height: auto; padding: 56px 0 64px; }
@@ -605,18 +654,7 @@ body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .pro
 
 @media (max-width: 720px) {
   .nav { height: 68px; }
-  .nav-links {
-    position: fixed; top: 68px; left: 0; right: 0;
-    background: var(--cream); flex-direction: column; align-items: stretch; gap: 0;
-    padding: 1rem 28px 2rem; border-bottom: 1px solid var(--line); box-shadow: var(--shadow-md);
-    transform: translateY(-140%); transition: transform .4s var(--ease); height: auto;
-  }
-  .nav-links.open { transform: translateY(0); }
-  .nav-links li { border-bottom: 1px solid var(--line); }
-  .nav-links a { display: block; padding: 1rem 0; font-size: 1.05rem; }
-  .nav-links a::after { display: none; }
-  .nav-toggle { display: flex; }
-  .nav-cta .btn:not(.nav-toggle) { display: none; }
+  .nav-links { top: 68px; max-height: calc(100vh - 68px); }
   .services-grid { grid-template-columns: repeat(2, 1fr); }
   .service-tile { border-right: 1px solid var(--hair-soft) !important; border-bottom: 1px solid var(--hair-soft); }
   .service-tile:nth-child(2n) { border-right: 0 !important; }
@@ -631,11 +669,21 @@ body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .pro
   .parallax-band, .hero, .page-hero { background-attachment: scroll; }
 }
 
+@media (max-width: 640px) {
+  /* header CTA folds into the drawer's WhatsApp button */
+  .nav-cta .btn:not(.nav-toggle) { display: none; }
+  .brand .tag { display: none; }
+}
+
 @media (max-width: 560px) {
   .colorway-grid, .test-grid, .svc-grid, .team, .steps, .band-grid { grid-template-columns: 1fr; }
   .field.two { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; }
   .footer-bottom { justify-content: center; text-align: center; }
+  .map-embed { height: 280px; margin-top: 2rem; }
+  .plate { padding: 1.4rem; }
+  .section-head { margin-bottom: 2rem; }
+  .collection-head { gap: 1rem; margin-bottom: 2rem; }
 }
 
 @media (max-width: 480px) {
@@ -643,13 +691,27 @@ body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .pro
   .product-body { padding: .8rem .85rem 1rem; }
   .product-body h3 { font-size: 1rem; }
   .filter-btn { padding: .5rem 1rem; font-size: .8rem; }
-  .pl-shoe { width: 168px; }
-  .pl-bar { width: min(70vw, 200px); }
+  .pl-shoe { width: 195px; }
   .whatsapp-float { left: 14px; bottom: 14px; width: 48px; height: 48px; }
   .to-top { right: 14px; bottom: 14px; width: 44px; height: 44px; }
 }
 
-@media (max-width: 380px) { .grid { grid-template-columns: 1fr; } }
+@media (max-width: 380px) {
+  .grid { grid-template-columns: 1fr; }
+  .brand .word { font-size: 1.15rem; }
+  .brand img { width: 38px; height: 38px; }
+  .pl-word { font-size: 1.4rem; }
+  .hero-actions { flex-direction: column; }
+  .hero-actions .btn { width: 100%; }
+}
+
+/* Short landscape phones — trim vertical padding so content isn't pushed away */
+@media (max-height: 540px) and (orientation: landscape) {
+  .hero-inner { padding: 40px 0 48px; }
+  .page-hero { padding: 48px 0 40px; }
+  .pl-shoe { width: 150px; margin-bottom: .6rem; }
+  .pl-word { font-size: 1.4rem; }
+}
 
 @media (pointer: coarse) {
   .nav-links a { padding: 1rem 0; }

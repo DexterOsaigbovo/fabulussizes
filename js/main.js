@@ -31,33 +31,49 @@
   // (WhatsApp float lives directly in each page's HTML)
 
   /* ========================================================================
-     1 · COBBLER PRELOADER  (only on the first visit of a browser session)
+     1 · COBBLER PRELOADER — a brogue drawn, stitched, punched and polished
+     in sync with the real page load. Plays on first arrival AND on reloads;
+     skipped when moving between pages (and for reduced motion).
      ======================================================================== */
-  // Decide whether to play the intro. It plays once per session, and never
-  // when the visitor prefers reduced motion.
-  var seenIntro = reduce;
-  try { if (sessionStorage.getItem("fabulus_seen") === "1") seenIntro = true; } catch (e) {}
+  var navKind = "navigate";
+  try {
+    var navEntry = performance.getEntriesByType && performance.getEntriesByType("navigation")[0];
+    if (navEntry && navEntry.type) navKind = navEntry.type;
+    else if (performance.navigation) navKind = performance.navigation.type === 1 ? "reload" : "navigate";
+  } catch (e) {}
+  var seenIntro = false;
+  try { seenIntro = sessionStorage.getItem("fabulus_seen") === "1"; } catch (e) {}
   try { sessionStorage.setItem("fabulus_seen", "1"); } catch (e) {}
+  var showIntro = !reduce && (navKind === "reload" || !seenIntro);
+  root.classList.add(showIntro ? "intro-played" : "intro-skipped");
 
-  // SVG of a dress shoe, drawn stroke-by-stroke as the load progresses:
-  //   upper · sole · heel · laces · welt-stitch, plus a tapping hammer.
+  // Side-profile brogue: sole → heel → upper → quarter seam → toe cap →
+  // laces → brogue punching → marching welt stitch. A cobbler's hammer taps
+  // away while it's built, and a polish shine sweeps across when finished.
   var SHOE_SVG =
-    '<svg class="pl-shoe" viewBox="0 0 240 130" fill="none" aria-hidden="true">' +
-      // hammer (taps above the toe while building)
-      '<g class="pl-hammer">' +
-        '<rect x="150" y="6" width="34" height="10" rx="3" fill="#fff"/>' +
-        '<rect x="163" y="14" width="6" height="30" rx="3" fill="#fff"/>' +
-      '</g>' +
-      // shoe outline paths (JS animates their draw)
-      '<path class="pl-draw" d="M42 92 L42 64 C42 49 55 45 74 47 C88 49 94 57 106 57 C133 57 168 65 196 88 L196 92 Z"/>' +
-      '<path class="pl-draw" d="M34 92 L200 92 C208 92 208 104 198 104 L45 104 C33 104 27 92 34 92 Z"/>' +
-      '<path class="pl-draw" d="M43 104 L62 104 L62 116 L47 116 C42 116 40 109 43 104 Z"/>' +
-      '<path class="pl-draw" d="M80 55 L96 64 M88 52 L104 61"/>' +
-      // welt stitching (marches once the upper is on)
-      '<path class="stitch" d="M50 88 L192 88"/>' +
+    '<svg class="pl-shoe" viewBox="0 0 260 140" fill="none" aria-hidden="true">' +
+      '<defs>' +
+        '<linearGradient id="plsheen" x1="0" y1="0" x2="1" y2="0">' +
+          '<stop offset="0" stop-color="rgba(255,244,214,0)"/>' +
+          '<stop offset=".5" stop-color="rgba(255,244,214,.55)"/>' +
+          '<stop offset="1" stop-color="rgba(255,244,214,0)"/>' +
+        '</linearGradient>' +
+        '<clipPath id="plclip"><path d="M36 96 L36 66 C36 50 46 44 60 44 C76 44 84 54 98 58 C118 64 138 62 156 68 C180 76 200 84 212 92 L216 96 C228 96 236 100 238 106 C239 110 236 112 230 112 L34 112 C26 112 22 108 22 102 Z"/></clipPath>' +
+      '</defs>' +
+      '<path class="pl-fillpath" d="M36 96 L36 66 C36 50 46 44 60 44 C76 44 84 54 98 58 C118 64 138 62 156 68 C180 76 200 84 212 92 L216 96 C228 96 236 100 238 106 C239 110 236 112 230 112 L34 112 C26 112 22 108 22 102 Z"/>' +
+      '<g class="pl-hammer"><rect x="148" y="2" width="32" height="13" rx="6.5"/><rect x="161" y="13" width="6" height="27" rx="3"/></g>' +
+      '<path class="pl-draw p-sole" d="M24 96 L216 96 C228 96 236 100 238 106 C239 110 236 112 230 112 L34 112 C26 112 22 108 22 102 Z"/>' +
+      '<path class="pl-draw p-heel" d="M32 112 L32 122 C32 125 35 126 38 126 L64 126 C68 126 70 124 70 120 L70 112"/>' +
+      '<path class="pl-draw p-upper" d="M36 96 L36 66 C36 50 46 44 60 44 C76 44 84 54 98 58 C118 64 138 62 156 68 C180 76 200 84 212 92 L214 96"/>' +
+      '<path class="pl-draw p-quarter" d="M88 60 C94 72 96 84 96 96"/>' +
+      '<path class="pl-draw p-cap" d="M164 70 C170 78 174 86 176 96"/>' +
+      '<path class="pl-draw p-laces" d="M96 62 L112 56 M100 70 L116 64 M104 78 L120 72"/>' +
+      '<path class="pl-dots" d="M157 73 C163 80 167 88 169 96"/>' +
+      '<path class="stitch" d="M30 100 L230 100"/>' +
+      '<g clip-path="url(#plclip)"><rect class="pl-shine" x="-70" y="30" width="46" height="110"/></g>' +
     '</svg>';
 
-  if (!seenIntro) {
+  if (showIntro) {
     buildAndRunPreloader();
   } else {
     root.classList.add("loaded");
@@ -73,6 +89,7 @@
           '<span class="sp"></span>' +
           "<b>" + "SIZES".split("").map(function (c) { return "<span>" + c + "</span>"; }).join("") + "</b>" +
         "</div>" +
+        '<div class="pl-rule"></div>' +
         '<div class="pl-status">Measuring the last…</div>' +
         '<div class="pl-bar"><i></i></div>' +
         '<div class="pl-pct">0%</div>' +
@@ -84,52 +101,60 @@
     body.style.overflow = "hidden";
 
     pre.querySelectorAll(".pl-word span").forEach(function (s, i) {
-      s.style.animationDelay = (0.2 + i * 0.05) + "s";
+      s.style.animationDelay = (0.15 + i * 0.045) + "s";
     });
 
     var shoe = pre.querySelector(".pl-shoe");
     var bar = pre.querySelector(".pl-bar i");
     var pct = pre.querySelector(".pl-pct");
     var status = pre.querySelector(".pl-status");
+    var dots = pre.querySelector(".pl-dots");
 
-    // prepare the outline paths so they can be "drawn" via dashoffset
-    var draws = [];
-    pre.querySelectorAll(".pl-draw").forEach(function (path) {
-      var len = 0;
-      try { len = path.getTotalLength(); } catch (e) { len = 400; }
+    // Each part of the shoe draws inside its own progress window, so the
+    // brogue is assembled the way a cobbler would build it.
+    var seq = [
+      ["p-sole", 0, 26], ["p-heel", 20, 32], ["p-upper", 26, 56],
+      ["p-quarter", 54, 66], ["p-cap", 60, 72], ["p-laces", 68, 84]
+    ].map(function (part) {
+      var path = pre.querySelector("." + part[0]);
+      var len = 400;
+      try { len = path.getTotalLength(); } catch (e) {}
       path.style.strokeDasharray = len;
       path.style.strokeDashoffset = len;
-      draws.push({ path: path, len: len });
+      return { path: path, len: len, a: part[1], b: part[2] };
     });
 
-    // cobbler status messages, revealed as the shoe comes together
     var stages = [
-      [0,  "Measuring the last…"],
-      [20, "Cutting the leather…"],
-      [42, "Lasting the upper…"],
-      [62, "Stitching the welt…"],
-      [82, "Burnishing the finish…"],
-      [95, "Lacing up…"]
+      [0, "Measuring the last…"], [18, "Cutting the leather…"],
+      [38, "Lasting the upper…"], [58, "Stitching the welt…"],
+      [76, "Punching the brogue…"], [90, "Final polish…"]
     ];
     var stageIdx = -1;
 
-    var p = 0, loaded = false, start = null, done = false;
+    var p = 0, loaded = false, done = false;
     window.addEventListener("load", function () { loaded = true; });
 
     function finish() {
       if (done) return;
       done = true;
-      shoe.classList.add("done");
-      curtain.classList.add("lift");
-      pre.classList.add("done");
-      body.style.overflow = "";
-      root.classList.add("loaded");
-      triggerSplit();
-      setTimeout(function () { pre.remove(); curtain.remove(); }, 900);
+      bar.style.width = "100%";
+      pct.textContent = "100%";
+      seq.forEach(function (s) { s.path.style.strokeDashoffset = 0; });
+      dots.style.opacity = 1;
+      shoe.classList.add("sew", "quiet", "done");
+      status.textContent = "A perfect fit.";
+      // dwell briefly so the brass finish + polish sweep can be seen
+      setTimeout(function () {
+        curtain.classList.add("lift");
+        pre.classList.add("done");
+        body.style.overflow = "";
+        root.classList.add("loaded");
+        triggerSplit();
+        setTimeout(function () { pre.remove(); curtain.remove(); }, 1000);
+      }, 800);
     }
 
-    function tick(t) {
-      if (!start) start = t;
+    function tick() {
       var target = loaded ? 100 : 92;
       p = lerp(p, target, 0.055);
       if (p > 99.5 && loaded) p = 100;
@@ -137,30 +162,31 @@
       bar.style.width = p + "%";
       pct.textContent = Math.round(p) + "%";
 
-      // draw the shoe in proportion to progress
-      for (var i = 0; i < draws.length; i++) {
-        draws[i].path.style.strokeDashoffset = draws[i].len * (1 - p / 100);
+      for (var i = 0; i < seq.length; i++) {
+        var s = seq[i];
+        var t = clamp((p - s.a) / (s.b - s.a), 0, 1);
+        s.path.style.strokeDashoffset = s.len * (1 - t);
       }
-      // start sewing the welt past the halfway mark
+      dots.style.opacity = clamp((p - 76) / 12, 0, 1);
       if (p > 58) shoe.classList.add("sew");
+      if (p >= 94) shoe.classList.add("quiet");
 
-      // advance the cobbler status message
-      for (var s = stages.length - 1; s >= 0; s--) {
-        if (p >= stages[s][0] && s !== stageIdx) {
-          stageIdx = s;
+      for (var g = stages.length - 1; g >= 0; g--) {
+        if (p >= stages[g][0] && g !== stageIdx) {
+          stageIdx = g;
           status.style.opacity = "0";
           (function (txt) {
-            setTimeout(function () { status.textContent = txt; status.style.opacity = "1"; }, 160);
-          })(stages[s][1]);
+            setTimeout(function () { status.textContent = txt; status.style.opacity = "1"; }, 150);
+          })(stages[g][1]);
           break;
         }
       }
 
-      if (p >= 100) { setTimeout(finish, 260); return; }
+      if (p >= 100) { setTimeout(finish, 200); return; }
       raf(tick);
     }
     raf(tick);
-    setTimeout(finish, 5000); // hard safety valve
+    setTimeout(finish, 6500); // hard safety valve
   }
 
   /* ========================================================================
@@ -207,8 +233,8 @@
   // When the intro isn't playing, reveal headings right away; when it is, the
   // preloader's finish() fires triggerSplit as the curtain lifts. A long
   // safety timeout guarantees headings never stay hidden if anything stalls.
-  if (seenIntro) { raf(function () { raf(triggerSplit); }); }
-  setTimeout(triggerSplit, seenIntro ? 800 : 6000);
+  if (!showIntro) { raf(function () { raf(triggerSplit); }); }
+  setTimeout(triggerSplit, showIntro ? 8000 : 800);
 
   /* ========================================================================
      3 · CUSTOM MAGNETIC CURSOR
@@ -347,6 +373,14 @@
   var toggle = document.querySelector(".nav-toggle");
   var links = document.querySelector(".nav-links");
   if (toggle && links) {
+    // WhatsApp CTA inside the mobile drawer (visible only when collapsed,
+    // where the header button is hidden on narrow screens)
+    if (!links.querySelector(".mobile-cta")) {
+      var mli = document.createElement("li");
+      mli.className = "mobile-cta-item";
+      mli.innerHTML = '<a class="mobile-cta" href="https://wa.me/2348165777546" target="_blank" rel="noopener">Order on WhatsApp</a>';
+      links.appendChild(mli);
+    }
     toggle.addEventListener("click", function () {
       var open = links.classList.toggle("open");
       toggle.classList.toggle("open", open);
