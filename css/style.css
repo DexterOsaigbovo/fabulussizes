@@ -684,6 +684,11 @@ body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .pro
   .plate { padding: 1.4rem; }
   .section-head { margin-bottom: 2rem; }
   .collection-head { gap: 1rem; margin-bottom: 2rem; }
+  /* long button labels wrap instead of pushing past the viewport */
+  .btn { white-space: normal; max-width: 100%; }
+  .btn-lg { padding: .95rem 1.5rem; font-size: .95rem; }
+  .cta-band { padding: 2.6rem 1.25rem; }
+  .parallax-band { padding: clamp(64px, 16vw, 110px) 0; }
 }
 
 @media (max-width: 480px) {
