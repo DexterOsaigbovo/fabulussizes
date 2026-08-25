@@ -376,9 +376,18 @@
     // WhatsApp CTA inside the mobile drawer (visible only when collapsed,
     // where the header button is hidden on narrow screens)
     if (!links.querySelector(".mobile-cta")) {
+      // Mirror the header CTA so the drawer button carries the same
+      // page-specific pre-filled WhatsApp message.
+      var headerCta = document.querySelector(".nav-cta .btn-primary[href*='wa.me']");
+      var href = headerCta ? headerCta.getAttribute("href") : "https://wa.me/2348165777546";
+      var label = headerCta ? headerCta.textContent.trim() : "Order on WhatsApp";
       var mli = document.createElement("li");
       mli.className = "mobile-cta-item";
-      mli.innerHTML = '<a class="mobile-cta" href="https://wa.me/2348165777546" target="_blank" rel="noopener">Order on WhatsApp</a>';
+      var a = document.createElement("a");
+      a.className = "mobile-cta";
+      a.href = href; a.target = "_blank"; a.rel = "noopener";
+      a.textContent = label;
+      mli.appendChild(a);
       links.appendChild(mli);
     }
     toggle.addEventListener("click", function () {

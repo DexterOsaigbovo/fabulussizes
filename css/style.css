@@ -106,7 +106,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .eyebrow.center { justify-content: center; }
 .eyebrow.on-dark { color: var(--brass-bright); }
 
-.section { padding: clamp(64px, 9vw, 120px) 0; position: relative; }
+/* overflow-x:clip stops a reveal animation's off-screen start position
+   (e.g. .reveal-right translateX) from widening the page. Unlike hidden it
+   creates no scroll container, so nothing inside is affected. */
+.section { padding: clamp(64px, 9vw, 120px) 0; position: relative; overflow-x: clip; }
 .section.tight, .section-tight { padding: clamp(48px, 6vw, 80px) 0; }
 .panel-bg, .section.panel-bg { background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 
@@ -136,6 +139,16 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .btn-ghost:hover { background: var(--text); color: var(--cream); }
 .btn-ghost.on-dark { color: #fff; border-color: rgba(255,255,255,.5); }
 .btn-ghost.on-dark:hover { background: #fff; color: var(--ink); }
+/* Any ghost button on a dark surface reads light automatically, so a missing
+   .on-dark class can never render dark-on-dark again. */
+.hero .btn-ghost, .page-hero .btn-ghost, .parallax-band .btn-ghost,
+.cta-band .btn-ghost, .band .btn-ghost, .site-footer .btn-ghost {
+  color: #fff; border-color: rgba(255,255,255,.55);
+}
+.hero .btn-ghost:hover, .page-hero .btn-ghost:hover, .parallax-band .btn-ghost:hover,
+.cta-band .btn-ghost:hover, .band .btn-ghost:hover, .site-footer .btn-ghost:hover {
+  background: #fff; color: var(--ink); border-color: #fff;
+}
 .btn-brass { background: linear-gradient(135deg, var(--brass-bright), var(--brass)); color: #241a0c; box-shadow: 0 12px 28px rgba(176,129,63,.35); }
 .btn-brass:hover { background: linear-gradient(135deg, var(--brass), var(--cognac)); color: #fff; }
 .btn-lg { padding: 1.05rem 2.2rem; font-size: 1rem; }
@@ -158,8 +171,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .brand .word span { color: var(--crimson); }
 .brand .tag { font-family: var(--utility); font-size: .58rem; font-weight: 600; letter-spacing: .26em; text-transform: uppercase; color: var(--text-muted); margin-top: 3px; }
 
-.nav-links { display: flex; align-items: center; gap: 1.9rem; list-style: none; margin: 0; padding: 0; }
-.nav-links a { position: relative; font-family: var(--utility); font-size: .9rem; font-weight: 600; color: var(--text-soft); padding: .3rem 0; transition: color .25s var(--ease); }
+.nav-links { display: flex; align-items: center; gap: 1.45rem; list-style: none; margin: 0; padding: 0; }
+.nav-links a { position: relative; font-family: var(--utility); font-size: .875rem; font-weight: 600; color: var(--text-soft); padding: .3rem 0; transition: color .25s var(--ease); }
 .nav-links a::after { content: ""; position: absolute; left: 0; bottom: -2px; width: 100%; height: 2px; background: var(--crimson); transform: scaleX(0); transform-origin: left; transition: transform .3s var(--ease); }
 .nav-links a:hover { color: var(--crimson); }
 .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
@@ -187,7 +200,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 .hero::before { content: ""; position: absolute; inset: 0; background-image: repeating-linear-gradient(115deg, rgba(255,255,255,.03) 0 2px, transparent 2px 26px); opacity: .6; }
 .hero::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(600px 600px at var(--mx) var(--my), rgba(184,18,40,.28), transparent 60%); transition: background .25s var(--ease); }
-.hero-inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1.05fr .95fr; gap: 3rem; align-items: center; min-height: min(88vh, 760px); padding: 90px 0 76px; }
+.hero-inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1.05fr .95fr; gap: 3rem; align-items: center; min-height: min(88vh, 760px); padding-top: 90px; padding-bottom: 76px; }
 .hero-copy .eyebrow { color: var(--brass-bright); }
 .hero-copy .eyebrow::before { background: var(--brass); }
 .hero-copy h1 { font-family: var(--display); font-weight: 800; font-size: clamp(2.8rem, 7vw, 5.6rem); line-height: .98; color: #fff; margin-bottom: 1.1rem; letter-spacing: -.02em; }
@@ -367,7 +380,18 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .product-body { padding: 1.1rem 1.2rem 1.3rem; flex: 1; display: flex; flex-direction: column; }
 .product-body h3 { font-family: var(--display); font-size: 1.15rem; font-weight: 700; margin: 0 0 .2rem; }
 .product-body .cat { font-family: var(--utility); font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 .7rem; }
-.product-foot { margin-top: auto; }
+.product-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: .6rem; flex-wrap: wrap; }
+/* per-product WhatsApp order button */
+.btn-order {
+  display: inline-flex; align-items: center; gap: .38rem;
+  font-family: var(--utility); font-size: .76rem; font-weight: 600; letter-spacing: .01em;
+  padding: .45rem .8rem; border-radius: 999px; white-space: nowrap;
+  border: 1.5px solid var(--line); background: var(--paper); color: var(--text-soft);
+  transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease);
+}
+.btn-order svg { width: 14px; height: 14px; fill: currentColor; flex: none; }
+.btn-order:hover { background: var(--crimson); border-color: var(--crimson); color: #fff; transform: translateY(-2px); }
+.btn-order:focus-visible { outline: 2px solid var(--crimson); outline-offset: 2px; }
 .price { font-family: var(--display); font-weight: 700; font-size: 1.2rem; color: var(--text); }
 .price small { font-family: var(--utility); font-size: .72rem; color: var(--text-muted); font-weight: 500; }
 
@@ -455,8 +479,15 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .form-success { display: none; background: rgba(42,86,70,.12); border: 1px solid rgba(42,86,70,.4); color: var(--pine); border-radius: 10px; padding: 1rem 1.2rem; margin-bottom: 1.4rem; font-size: .95rem; }
 .form-success.show { display: block; }
 
-.map-embed { margin-top: 3rem; border-radius: var(--radius-lg); overflow: hidden; height: 360px; box-shadow: var(--shadow-sm); border: 1px solid var(--line); }
-.map-embed iframe { width: 100%; height: 100%; border: 0; display: block; filter: sepia(.12) saturate(.9); }
+.map-block { margin-top: 3rem; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow-sm); background: var(--paper); }
+.map-embed { height: clamp(260px, 40vw, 420px); overflow: hidden; }
+.map-embed iframe { width: 100%; height: 100%; border: 0; display: block; filter: saturate(.94) contrast(1.02); }
+.map-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 1.1rem 1.4rem; border-top: 1px solid var(--line); }
+.map-where { display: flex; align-items: center; gap: .9rem; min-width: 0; }
+.map-pin { flex: none; width: 44px; height: 44px; border-radius: 12px; background: var(--cream-2); color: var(--crimson); display: grid; place-items: center; }
+.map-pin svg { width: 22px; height: 22px; }
+.map-where b { display: block; font-family: var(--utility); font-size: 1rem; color: var(--text); }
+.map-where span { font-size: .9rem; color: var(--text-soft); }
 
 /* ============================================================
    FOOTER (dark)
@@ -465,6 +496,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.3fr; gap: 2.5rem; padding-bottom: 3rem; border-bottom: 1px solid var(--hair); }
 .footer-brand .brand { margin-bottom: 1rem; }
 .footer-brand .brand .word { color: #fff; }
+/* On the dark footer the deep crimson only reaches 2.7:1 — the brighter
+   brand red lifts the wordmark to 4.5:1 while staying on-palette. */
+.site-footer .brand .word span { color: var(--crimson-soft); }
 .footer-brand .brand .tag { color: var(--parchment-mut); }
 .footer-brand p { font-size: .92rem; max-width: 22rem; color: var(--parchment-dim); }
 .footer-col h4 { color: #fff; font-family: var(--utility); font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 1.1rem; }
@@ -487,11 +521,27 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 /* ============================================================
    FLOATS — WhatsApp · back-to-top · scroll progress · grain
    ============================================================ */
-.whatsapp-float { position: fixed; left: 22px; bottom: 22px; z-index: 90; width: 54px; height: 54px; border-radius: 50%; background: #25d366; color: #fff; display: grid; place-items: center; box-shadow: var(--shadow-md); transition: transform .3s var(--ease); }
-.whatsapp-float:hover { transform: translateY(-4px) scale(1.05); }
+/* The float is the stand-in for the header "Order on WhatsApp" button, so it
+   is hidden while that button is on screen and only appears once the nav
+   collapses to the burger menu (<=1100px). Ink + brass keeps it on-palette
+   and distinct from the crimson back-to-top button in the opposite corner. */
+.whatsapp-float {
+  position: fixed; left: 22px; bottom: 22px; z-index: 90;
+  width: 54px; height: 54px; border-radius: 50%;
+  background: var(--ink); color: var(--brass-bright);
+  border: 1px solid rgba(214, 172, 99, .45);
+  display: none; place-items: center; box-shadow: var(--shadow-md);
+  transition: transform .3s var(--ease), background .3s var(--ease),
+              color .3s var(--ease), border-color .3s var(--ease);
+}
+.whatsapp-float:hover {
+  transform: translateY(-4px) scale(1.05);
+  background: var(--crimson); color: #fff; border-color: var(--crimson);
+}
 .whatsapp-float svg { width: 28px; height: 28px; fill: currentColor; }
-.whatsapp-float::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #25d366; z-index: -1; animation: ring 2s ease-out infinite; }
-@keyframes ring { 0% { transform: scale(1); opacity: .6; } 100% { transform: scale(2.2); opacity: 0; } }
+.whatsapp-float::before { content: ""; position: absolute; inset: -1px; border-radius: 50%; background: var(--brass); z-index: -1; animation: ring 2.4s ease-out infinite; }
+.whatsapp-float:hover::before { background: var(--crimson); }
+@keyframes ring { 0% { transform: scale(1); opacity: .45; } 100% { transform: scale(2.1); opacity: 0; } }
 
 .to-top { position: fixed; right: 22px; bottom: 22px; width: 48px; height: 48px; border-radius: 50%; background: var(--crimson); color: #fff; border: 0; cursor: pointer; display: grid; place-items: center; box-shadow: var(--shadow-md); opacity: 0; visibility: hidden; transform: translateY(12px); transition: all .3s var(--ease); z-index: 90; }
 .to-top.show { opacity: 1; visibility: visible; transform: none; }
@@ -610,8 +660,10 @@ body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .pro
   .nav-links { gap: 1.3rem; }
 }
 
-/* ---------- Nav collapses to a drawer once links + CTA get crowded ---------- */
-@media (max-width: 1020px) {
+/* ---------- Nav collapses to a drawer once the 6 links would crowd the CTA ---------- */
+@media (max-width: 1100px) {
+  /* burger is showing, so the header CTA is no longer the primary route */
+  .whatsapp-float { display: grid; }
   .nav-links {
     position: fixed; top: 76px; left: 0; right: 0; z-index: 99;
     background: var(--cream); flex-direction: column; align-items: stretch; gap: 0;
@@ -633,7 +685,7 @@ body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .pro
 }
 
 @media (max-width: 980px) {
-  .hero-inner { grid-template-columns: 1fr; gap: 2.4rem; min-height: auto; padding: 56px 0 64px; }
+  .hero-inner { grid-template-columns: 1fr; gap: 2.4rem; min-height: auto; padding-top: 56px; padding-bottom: 64px; }
   .hero-photo .frame { max-width: 440px; margin: 0 auto; }
   .services-grid { grid-template-columns: repeat(3, 1fr); }
   .service-tile:nth-child(3) { border-right: 0; }
@@ -680,7 +732,9 @@ body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .pro
   .field.two { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; }
   .footer-bottom { justify-content: center; text-align: center; }
-  .map-embed { height: 280px; margin-top: 2rem; }
+  .map-block { margin-top: 2rem; }
+  .map-bar { padding: 1rem; }
+  .map-bar .btn { width: 100%; }
   .plate { padding: 1.4rem; }
   .section-head { margin-bottom: 2rem; }
   .collection-head { gap: 1rem; margin-bottom: 2rem; }
@@ -694,6 +748,8 @@ body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .pro
 @media (max-width: 480px) {
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
   .product-body { padding: .8rem .85rem 1rem; }
+  .product-foot { flex-direction: column; align-items: stretch; gap: .5rem; }
+  .btn-order { justify-content: center; }
   .product-body h3 { font-size: 1rem; }
   .filter-btn { padding: .5rem 1rem; font-size: .8rem; }
   .pl-shoe { width: 195px; }
@@ -712,7 +768,7 @@ body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .pro
 
 /* Short landscape phones — trim vertical padding so content isn't pushed away */
 @media (max-height: 540px) and (orientation: landscape) {
-  .hero-inner { padding: 40px 0 48px; }
+  .hero-inner { padding-top: 40px; padding-bottom: 48px; }
   .page-hero { padding: 48px 0 40px; }
   .pl-shoe { width: 150px; margin-bottom: .6rem; }
   .pl-word { font-size: 1.4rem; }
@@ -721,6 +777,8 @@ body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .pro
 @media (pointer: coarse) {
   .nav-links a { padding: 1rem 0; }
   .btn { min-height: 44px; }
+  /* keep the per-product order button a comfortable touch target */
+  .btn-order { min-height: 40px; padding: .55rem .9rem; font-size: .8rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
