@@ -5,7 +5,7 @@
      --display / --title / --serif  → Playfair Display (headings, quotes)
      --utility                      → Inter (nav, buttons, labels, body)
    Surfaces are light by default; hero, stats band, parallax bands, page
-   headers, the engraving plate and the footer stay dark for contrast.
+   headers, parallax bands and the footer stay dark for contrast.
    ============================================================================ */
 
 :root {
@@ -273,34 +273,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .band-grid .num { font-family: var(--display); font-size: clamp(2.4rem, 5vw, 3.4rem); font-weight: 800; color: #fff; line-height: 1; }
 .band-grid .num em { color: var(--brass-bright); font-style: normal; }
 .band-grid .lbl { color: var(--parchment-dim); letter-spacing: .1em; text-transform: uppercase; font-size: .76rem; margin-top: .5rem; }
-
-/* ============================================================
-   NAME THE SHOE
-   ============================================================ */
-.name-shoe { background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.ns-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
-.ns-copy p { color: var(--text-soft); }
-.ns-copy label { display: block; font-family: var(--utility); font-size: .8rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--text-muted); margin: 1.5rem 0 .5rem; }
-.ns-copy input { width: 100%; max-width: 420px; font-family: var(--display); font-size: 1.3rem; padding: .8rem 1rem; border: 1.5px solid var(--line); border-radius: 10px; background: var(--paper); color: var(--text); transition: border-color .25s var(--ease), box-shadow .25s var(--ease); }
-.ns-copy input:focus { outline: none; border-color: var(--crimson); box-shadow: 0 0 0 4px rgba(184,18,40,.12); }
-.ns-cta { margin-top: 1.5rem; }
-.plate-stage { display: grid; place-items: center; padding: 2rem; }
-.plate {
-  width: 100%; max-width: 420px; aspect-ratio: 16/10;
-  border-radius: 14px; padding: 2rem;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: .8rem;
-  background: linear-gradient(150deg, #2a1f15, #17110a);
-  border: 1px solid rgba(214,172,99,.35);
-  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,.06);
-}
-.plate .eyebrow-plate { font-family: var(--utility); font-size: .68rem; letter-spacing: .24em; text-transform: uppercase; color: var(--brass); }
-.plate .engraved {
-  font-family: var(--display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.8rem);
-  color: var(--brass-bright);
-  text-shadow: 0 1px 0 rgba(0,0,0,.6), 0 -1px 1px rgba(214,172,99,.3);
-  word-break: break-word; line-height: 1.1;
-}
-.plate .sub-plate { font-family: var(--utility); font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--parchment-mut); }
 
 /* ============================================================
    REPAIRS & TRAINING
@@ -692,7 +664,7 @@ body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .pro
   .colorway-grid { grid-template-columns: repeat(2, 1fr); }
   .colorway-card.tall { grid-row: span 1; }
   .colorway-card.tall .imgwrap { min-height: 0; height: auto; aspect-ratio: 4/3; }
-  .craft, .ns-grid, .rt-grid, .split, .contact-grid { grid-template-columns: 1fr; }
+  .craft, .rt-grid, .split, .contact-grid { grid-template-columns: 1fr; }
   .test-grid, .svc-grid, .team { grid-template-columns: repeat(2, 1fr); }
   .steps, .band-grid { grid-template-columns: repeat(2, 1fr); }
   .collection-head { grid-template-columns: 1fr; }
@@ -735,7 +707,6 @@ body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .pro
   .map-block { margin-top: 2rem; }
   .map-bar { padding: 1rem; }
   .map-bar .btn { width: 100%; }
-  .plate { padding: 1.4rem; }
   .section-head { margin-bottom: 2rem; }
   .collection-head { gap: 1rem; margin-bottom: 2rem; }
   /* long button labels wrap instead of pushing past the viewport */

@@ -605,28 +605,7 @@
   }
 
   /* ========================================================================
-     16 · NAME THE SHOE — mirror the typed name onto the plate and carry it
-     straight into the WhatsApp order message
-     ======================================================================== */
-  var nameInput = document.getElementById("nameInput");
-  var engravedText = document.getElementById("engravedText");
-  var engraveCta = document.getElementById("engraveCta");
-  var WA_ORDERS = "2348165777546";
-  if (nameInput && engravedText && engraveCta) {
-    var syncEngraving = function () {
-      var v = nameInput.value.trim();
-      engravedText.textContent = v.length ? v : "Your Name Here";
-      var msg = v.length
-        ? 'Hello Fabulus Sizes — I\'d like to order a bespoke pair engraved "' + v + '".'
-        : "Hello Fabulus Sizes — I'd like to order a bespoke pair.";
-      engraveCta.href = "https://wa.me/" + WA_ORDERS + "?text=" + encodeURIComponent(msg);
-    };
-    nameInput.addEventListener("input", syncEngraving);
-    syncEngraving();
-  }
-
-  /* ========================================================================
-     17 · CURRENT YEAR
+     16 · CURRENT YEAR
      ======================================================================== */
   document.querySelectorAll("[data-year]").forEach(function (n) {
     n.textContent = new Date().getFullYear();
